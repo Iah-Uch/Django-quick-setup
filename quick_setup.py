@@ -19,7 +19,8 @@ Notes:
 - Proper security measures should be taken if exposing the server to the network.
 
 Author: Iah-Uch
-Contact: github.com/Iah-Uch/
+Contact: https://github.com/Iah-Uch/
+Source: https://github.com/Iah-Uch/Django-quick-setup/
 """
 
 
@@ -81,18 +82,20 @@ def run_initial_management_commands(venv_path, project_dir):
 
 # Function to start the Django development server
 def start_django_server(venv_path, project_dir):
-    expose_to_network = input("\n\033[93mExpose the server to the network? (y/n): \033[0m")
-    if expose_to_network.lower() == "y":
-        print("\n\033[91mWARNING: Exposing the server to the network may pose security risks.")
-        print("Please ensure proper security measures are in place.")
-        local_ip = get_local_ip()
-        if local_ip:
-            print(f"\n\033[92mYou can access the server from other devices on the network using this IP: {local_ip}:8000\033[0m")
+    start_server = input("\n\033[94mStart the Django development server? (y/n): \033[0m")
+    if start_server.lower() == "y":
+        expose_to_network = input("\n\033[93mExpose the server to the network? (y/n): \033[0m")
+        if expose_to_network.lower() == "y":
+            print("\n\033[91mWARNING: Exposing the server to the network may pose security risks.")
+            print("Please ensure proper security measures are in place.")
+            local_ip = get_local_ip()
+            if local_ip:
+                print(f"\n\033[92mYou can access the server from other devices on the network using this IP: {local_ip}:8000\033[0m")
+            else:
+                print("\n\033[91mUnable to determine the local IP address. You can manually find it and use it to access the server.\033[0m")
+            run_command(f"{venv_path}\\Scripts\\python {os.path.join(project_dir, 'manage.py')} runserver 0.0.0.0:80", section_name="Django server")
         else:
-            print("\n\033[91mUnable to determine the local IP address. You can manually find it and use it to access the server.\033[0m")
-        run_command(f"{venv_path}\\Scripts\\python {os.path.join(project_dir, 'manage.py')} runserver 0.0.0.0:80", section_name="Django server")
-    else:
-        run_command(f"{venv_path}\\Scripts\\python {os.path.join(project_dir, 'manage.py')} runserver", section_name="Django server")
+            run_command(f"{venv_path}\\Scripts\\python {os.path.join(project_dir, 'manage.py')} runserver", section_name="Django server")
 
 def main():
     try:
@@ -129,10 +132,8 @@ def main():
         # Run initial management commands within the virtual environment
         run_initial_management_commands(venv_path, args.project_dir)
 
-        start_server = input("\n\033[94mStart the Django development server? (y/n): \033[0m")
-        if start_server.lower() == "y":
-            # Start the Django development server within the virtual environment
-            start_django_server(venv_path, args.project_dir)
+        # Start the Django development server within the virtual environment
+        start_django_server(venv_path, args.project_dir)
 
         print("\n\033[92mSetup and server run completed successfully!\033[0m")
         
